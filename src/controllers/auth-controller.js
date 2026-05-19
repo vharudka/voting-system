@@ -15,7 +15,8 @@ export class AuthController {
     return this.userService.createUser(login, password);
   }
 
-  logout() {
-    return { success: true };
+  logout(token) {
+    this.userService.logout(token);
+    return { message: "Logged out successfully" };
   }
 }

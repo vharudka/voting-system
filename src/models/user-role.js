@@ -1,5 +1,5 @@
-import { Role } from "./Role.js";
-import { Permission } from "./Permission.js";
+import { Role } from "./role.js";
+import { Permission } from "./permissions.js";
 
 export class UserRole extends Role {
   constructor() {
