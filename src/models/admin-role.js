@@ -1,5 +1,5 @@
 import { Role } from "./role.js";
-import { Permission } from "./permission.js";
+import { Permission } from "./permissions.js";
 
 export class AdminRole extends Role {
   constructor() {
