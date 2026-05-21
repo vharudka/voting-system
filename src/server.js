@@ -68,6 +68,14 @@ const server = http.createServer((req, res) => {
     });
   }
 
+  if (pathname === "/api/votings" && req.method === "GET") {
+    const token = req.headers["authorization"];
+
+    return handleJson(req, res, body => {
+      return votingController.getAll(token);
+    });
+  }
+
   res.writeHead(404);
   res.end("Not found");
 });
@@ -109,7 +117,6 @@ function handleError(res, err) {
     return json(res, { error: err.message }, 409);
   }
 
-  console.error("Unexpected error:", err);
   return json(res, { error: "Internal server error" }, 500);
 }
 

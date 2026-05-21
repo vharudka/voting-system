@@ -42,7 +42,7 @@ export class VotingController {
   getAll(token) {
     AuthValidator.validateToken(token);
 
-    return this.votingService.getAll(userId);
+    return this.votingService.getAll(token);
   }
 
   getResults(token, votingId) {

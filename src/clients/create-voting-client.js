@@ -21,6 +21,7 @@ class CreateVotingClient {
 
     try {
       const res = await fetch("/api/users", {
+        method: "GET",
         headers: { "Authorization": token || "" }
       });
 

@@ -47,7 +47,7 @@ export class UserService {
   }
 
   getAll(token) {
-    var login = this.memoryDb.getLoginByToken(token);
+    const login = this.memoryDb.getLoginByToken(token);
 
     if (!login) {
       throw new AuthError("Invalid or expired token");
