@@ -109,6 +109,15 @@ export class MemoryDb {
     return this.votings.get(id);
   }
 
+  getVotingByIdForLogin(login, id) {
+    const voting = this.votings.get(id);
+    if (!voting || !voting.logins.includes(login)) {
+      return null;
+    }
+
+    return voting;
+  }
+
   getAllVotings() {
     return [...this.votings.values()];
   }

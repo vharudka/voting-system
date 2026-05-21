@@ -24,19 +24,19 @@ export class VotingController {
     return this.votingService.update(token, title, options, logins);
   }
 
-  castVote(token, votingId, optionId) {
+  castVote(token, id, optionId) {
     AuthValidator.validateToken(token);
-    VotingValidator.validateVotingId(votingId);
+    VotingValidator.validateVotingId(id);
     VotingValidator.validateOptionId(optionId);
 
-    return this.votingService.castVote(userId, votingId, optionId);
+    return this.votingService.castVote(token, id, optionId);
   }
 
-  getVoting(token, votingId) {
+  get(token, id) {
     AuthValidator.validateToken(token);
-    VotingValidator.validateVotingId(votingId);
+    VotingValidator.validateVotingId(id);
 
-    return this.votingService.get(votingId);
+    return this.votingService.get(token, id);
   }
 
   getAll(token) {
@@ -45,10 +45,10 @@ export class VotingController {
     return this.votingService.getAll(token);
   }
 
-  getResults(token, votingId) {
+  getResults(token, id) {
     AuthValidator.validateToken(token);
-    VotingValidator.validateVotingId(votingId);
+    VotingValidator.validateVotingId(id);
 
-    return this.votingService.getResults(votingId);
+    return this.votingService.getResults(id);
   }
 }

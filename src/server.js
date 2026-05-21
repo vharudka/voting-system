@@ -76,6 +76,15 @@ const server = http.createServer((req, res) => {
     });
   }
 
+  if (pathname.startsWith("/api/votings/") && req.method === "GET") {
+    const token = req.headers["authorization"];
+    const id = pathname.split("/")[3];
+
+    return handleJson(req, res, body => {
+      return votingController.get(token, id);
+    });
+  }
+
   res.writeHead(404);
   res.end("Not found");
 });
