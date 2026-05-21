@@ -15,13 +15,14 @@ export class VotingController {
     return this.votingService.create(token, title, options, logins);
   }
 
-  update(token, title, options, logins) {
+  update(token, id, title, options, logins) {
     AuthValidator.validateToken(token);
+    VotingValidator.validateVotingId(id);
     VotingValidator.validateTitle(title);
     VotingValidator.validateOptions(options);
     VotingValidator.validateLogins(logins);
-
-    return this.votingService.update(token, title, options, logins);
+    
+    return this.votingService.update(token, id, title, options, logins);
   }
 
   castVote(token, id, optionId) {

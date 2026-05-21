@@ -69,8 +69,8 @@ export class MemoryDb {
       }
     );
 
-    this.addVoting(voting1);
-    this.addVoting(voting2);
+    this.addOrUpdateVoting(voting1);
+    this.addOrUpdateVoting(voting2);
   }
 
   addUser(user) {
@@ -101,7 +101,7 @@ export class MemoryDb {
     return [...this.users.values()];
   }
 
-  addVoting(voting) {
+  addOrUpdateVoting(voting) {
     this.votings.set(voting.id, voting);
   }
 

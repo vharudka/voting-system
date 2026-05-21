@@ -39,12 +39,12 @@ class VotingsClient {
         });
         actionsTd.appendChild(openBtn);
 
-        const editBtn = document.createElement("button");
-        editBtn.textContent = "Edit";
-        editBtn.addEventListener("click", () => {
-          window.location.href = `/edit-voting.html?id=${v.id}`;
+        const updateBtn = document.createElement("button");
+        updateBtn.textContent = "Update";
+        updateBtn.addEventListener("click", () => {
+          window.location.href = `/update-voting.html?id=${v.id}`;
         });
-        actionsTd.appendChild(editBtn);
+        actionsTd.appendChild(updateBtn);
 
         tr.appendChild(actionsTd);
 

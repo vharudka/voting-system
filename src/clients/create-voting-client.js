@@ -10,6 +10,9 @@ class CreateVotingClient {
     document.getElementById("addOptionBtn")
       .addEventListener("click", () => this.addOption());
 
+    document.getElementById("removeOptionBtn")
+      .addEventListener("click", () => this.removeOption());
+
     document.getElementById("createVotingBtn")
       .addEventListener("click", () => this.createVoting());
 
@@ -53,14 +56,22 @@ class CreateVotingClient {
 
     const input = document.createElement("input");
     input.className = "optionInput";
-    input.placeholder = `Option ${count + 1}`;
 
     this.optionsContainer.appendChild(input);
     this.optionsContainer.appendChild(document.createElement("br"));
     this.optionsContainer.appendChild(document.createElement("br"));
   }
 
+  removeOption() {
+    if (this.optionsContainer.children.length >= 3) {
+      this.optionsContainer.removeChild(this.optionsContainer.lastChild);
+      this.optionsContainer.removeChild(this.optionsContainer.lastChild);
+      this.optionsContainer.removeChild(this.optionsContainer.lastChild);
+    }
+  }
+
   async createVoting() {
+    const token = localStorage.getItem("token");
     const title = document.getElementById("title").value.trim();
     const optionInputs = document.querySelectorAll(".optionInput");
 
@@ -71,8 +82,6 @@ class CreateVotingClient {
     const selectedUsers = [...this.userSelect.options]
       .filter(o => o.selected)
       .map(o => o.value);
-
-    const token = localStorage.getItem("token");
 
     try {
       const res = await fetch("/api/votings", {
