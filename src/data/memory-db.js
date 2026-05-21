@@ -2,25 +2,27 @@ import crypto from "crypto";
 import { UserRole } from "../models/user-role.js";
 import { AdminRole } from "../models/admin-role.js";
 import { User } from "../models/user.js";
+import { Voting } from "../models/voting.js";
 
 export class MemoryDb {
   constructor() {
     this.users = new Map();
-    this.userByLogin = new Map();
     this.tokens = new Map();
+    this.votings = new Map();
 
-    this.seed();
+    this.seedUsers();
+    this.seedVotings();
   }
 
-  seed() {
+  seedUsers() {
     const adminRole = new AdminRole();
     const userRole = new UserRole();
 
-    const admin = new User(crypto.randomUUID(), "admin", "123123", adminRole);
-    const user1 = new User(crypto.randomUUID(), "user1", "123123", userRole);
-    const user2 = new User(crypto.randomUUID(), "user2", "123123", userRole);
-    const user3 = new User(crypto.randomUUID(), "user3", "123123", userRole);
-    const user4 = new User(crypto.randomUUID(), "user4", "123123", userRole);
+    const admin = new User("admin", "123123", adminRole);
+    const user1 = new User("user1", "123123", userRole);
+    const user2 = new User("user2", "123123", userRole);
+    const user3 = new User("user3", "123123", userRole);
+    const user4 = new User("user4", "123123", userRole);
 
     this.addUser(admin);
     this.addUser(user1);
@@ -29,33 +31,89 @@ export class MemoryDb {
     this.addUser(user4);
   }
 
-  addUser(user) {
-    this.users.set(user.id, user);
-    this.userByLogin.set(user.login, user.id);
+  seedVotings() {
+    const voting1 = new Voting
+    (
+      crypto.randomUUID(),
+      "Favorite Programming Language",
+      [
+        "JavaScript",
+        "Python",
+        "C#"
+      ],
+      [
+        "user1",
+        "user2",
+        "user3"
+      ],
+      {}
+    );
+
+    const voting2 = new Voting
+    (
+      crypto.randomUUID(),
+      "Best Food",
+      [
+        "Pizza",
+        "Burger",
+        "Kebab",
+        "Sushi"
+      ],
+      [
+        "user1",
+        "user2"
+      ],
+      {
+        "user1": 1,
+        "user2": 3,
+      }
+    );
+
+    this.addVoting(voting1);
+    this.addVoting(voting2);
   }
 
-  getUserById(id) {
-    return this.users.get(id);
+  addUser(user) {
+    this.users.set(user.login, user);
   }
 
   getUserByLogin(login) {
-    const id = this.userByLogin.get(login);
-    return this.users.get(id);
+    return this.users.get(login);
   }
 
   userExists(login) {
-    return this.userByLogin.has(login);
+    return this.users.has(login);
   }
 
-  saveToken(token, userId) {
-    this.tokens.set(token, userId);
+  saveToken(token, login) {
+    this.tokens.set(token, login);
   }
 
-  getUserIdByToken(token) {
+  getLoginByToken(token) {
     return this.tokens.get(token);
   }
 
   invalidateToken(token) {
     this.tokens.delete(token);
+  }
+
+  getAllUsers() {
+    return [...this.users.values()];
+  }
+
+  addVoting(voting) {
+    this.votings.set(voting.id, voting);
+  }
+
+  getVotingById(id) {
+    return this.votings.get(id);
+  }
+
+  getAllVotings() {
+    return [...this.votings.values()];
+  }
+
+  getVotingsForLogin(login) {
+    return [...this.votings.values()].filter(v => v.logins.includes(login));
   }
 }

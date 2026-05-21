@@ -8,33 +8,31 @@ class LogoutClient {
     btn.addEventListener("click", () => this.logout());
   }
 
-  logout() {
+  async logout() {
     const token = localStorage.getItem("token");
 
-    fetch("/api/auth/logout", {
-      method: "GET",
-      headers: {
-        "Authorization": token ? token : ""
-      }
-    })
-    .then(async res => {
+    try {
+      const res = await fetch("/api/auth/logout", {
+        method: "GET",
+        headers: {
+          "Authorization": token || ""
+        }
+      });
+
       const data = await res.json();
 
       if (!res.ok) {
         throw new Error(data.error);
       }
 
-      return data;
-    })
-    .then(data => {
       localStorage.removeItem("token");
 
       alert("You have been logged out.");
       window.location.href = "/login.html";
-    })
-    .catch(err => {
+
+    } catch (err) {
       alert("Error: " + err.message);
-    });
+    }
   }
 }
 

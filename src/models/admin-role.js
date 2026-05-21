@@ -10,6 +10,8 @@ export class AdminRole extends Role {
           Permission.CREATE_VOTING,
           Permission.EDIT_VOTING,
           Permission.VIEW_ALL_VOTINGS,
+          Permission.VIEW_ALL_USERS,
+          Permission.CAST_VOTE,
           Permission.GENERATE_REPORTS
         ]
       );

@@ -8,32 +8,30 @@ class LoginClient {
     btn.addEventListener("click", () => this.login());
   }
 
-  login() {
+  async login() {
     const login = document.getElementById("login").value;
     const password = document.getElementById("password").value;
 
-    fetch("/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify({ login, password })
-    })
-    .then(async res => {
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ login, password })
+      });
+
       const data = await res.json();
 
       if (!res.ok) {
         throw new Error(data.error);
       }
 
-      return data;
-    })
-    .then(data => {
       localStorage.setItem("token", data.token);
-      
+
       alert("Login successful!");
       window.location.href = "/votings.html";
-    })
-    .catch(err => {
+
+    } catch (err) {
       alert("Error: " + err.message);
-    });
+    }
   }
 }
 

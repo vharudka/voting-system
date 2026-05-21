@@ -1,50 +1,52 @@
 import { VotingValidator } from "../validators/voting-validator.js";
+import { AuthValidator } from "../validators/auth-validator.js";
 
 export class VotingController {
   constructor(votingService) {
     this.votingService = votingService;
   }
 
-  createVoting(userId, name, options, userIds) {
-    VotingValidator.validateName(name);
+  create(token, title, options, logins) {
+    AuthValidator.validateToken(token);
+    VotingValidator.validateTitle(title);
     VotingValidator.validateOptions(options);
+    VotingValidator.validateLogins(logins);
 
-    return this.votingService.createVoting(userId, name, options, userIds);
+    return this.votingService.create(token, title, options, logins);
   }
 
-  updateVoting(userId, name, options, userIds) {
-    VotingValidator.validateName(name);
+  update(token, title, options, logins) {
+    AuthValidator.validateToken(token);
+    VotingValidator.validateTitle(title);
     VotingValidator.validateOptions(options);
+    VotingValidator.validateLogins(logins);
 
-    return this.votingService.updateVoting(userId, name, options, userIds);
+    return this.votingService.update(token, title, options, logins);
   }
 
-  castVote(userId, votingId, optionId) {
+  castVote(token, votingId, optionId) {
+    AuthValidator.validateToken(token);
     VotingValidator.validateVotingId(votingId);
     VotingValidator.validateOptionId(optionId);
 
     return this.votingService.castVote(userId, votingId, optionId);
   }
 
-  getVoting(votingId) {
+  getVoting(token, votingId) {
+    AuthValidator.validateToken(token);
     VotingValidator.validateVotingId(votingId);
 
-    return this.votingService.getVoting(votingId);
+    return this.votingService.get(votingId);
   }
 
-  getVotingsForUser(userId) {
-    VotingValidator.validateUserId(userId);
+  getAll(token) {
+    AuthValidator.validateToken(token);
 
-    return this.votingService.getVotingsForUser(userId);
+    return this.votingService.getAll(userId);
   }
 
-  getAllVotings(userId) {
-    VotingValidator.validateUserId(userId);
-
-    return this.votingService.getAllVotings(userId);
-  }
-
-  getResults(votingId) {
+  getResults(token, votingId) {
+    AuthValidator.validateToken(token);
     VotingValidator.validateVotingId(votingId);
 
     return this.votingService.getResults(votingId);

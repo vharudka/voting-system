@@ -6,6 +6,7 @@ import { parse } from "url";
 import { UserService } from "./services/user-service.js";
 import { VotingService } from "./services/voting-service.js";
 import { AuthController } from "./controllers/auth-controller.js";
+import { UserController } from "./controllers/user-controller.js";
 import { VotingController } from "./controllers/voting-controller.js";
 import { MemoryDb } from "./data/memory-db.js";
 import { AuthError } from "./errors/auth-error.js";
@@ -16,6 +17,7 @@ const memoryDb = new MemoryDb();
 const userService = new UserService(memoryDb);
 const votingService = new VotingService(memoryDb);
 const authController = new AuthController(userService);
+const userController = new UserController(userService);
 const votingController = new VotingController(votingService);
 
 const server = http.createServer((req, res) => {
@@ -46,7 +48,23 @@ const server = http.createServer((req, res) => {
     const token = req.headers["authorization"];
 
     return handleJson(req, res, body => {
-      return authController.logout();
+      return authController.logout(token);
+    });
+  }
+
+  if (pathname === "/api/users" && req.method === "GET") {
+    const token = req.headers["authorization"];
+
+    return handleJson(req, res, body => {
+      return userController.getAll(token);
+    });
+  }
+
+  if (pathname === "/api/votings" && req.method === "POST") {
+    const token = req.headers["authorization"];
+
+    return handleJson(req, res, body => {
+      return votingController.create(token, body.title, body.options, body.logins);
     });
   }
 

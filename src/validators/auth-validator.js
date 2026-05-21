@@ -18,4 +18,10 @@ export class AuthValidator {
       throw new ValidationError("Password must be at least 6 characters");
     }
   }
+
+  static validateToken(token) {
+    if (!token || token.trim() === "") {
+      throw new ValidationError("token cannot be empty");
+    }
+  }
 }
