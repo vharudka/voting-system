@@ -99,8 +99,12 @@ export class VotingService {
       throw ValidationError(`Voting '${id}' doesn't exist`);
     }
 
+    if (!voting.logins.includes(login)) {
+      throw new ValidationError("User are not assigned to this voting");
+    }
+
     if (voting.votes[login] !== undefined) {
-      throw new ValidationError("You have already voted");
+      throw new ValidationError("User have already voted");
     }
 
     const index = voting.options.indexOf(option);
