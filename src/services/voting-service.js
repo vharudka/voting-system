@@ -83,8 +83,36 @@ export class VotingService {
     return voting;
   }
 
-  castVote(token, votingId, optionId) {
+  castVote(token, id, option) {
+    const login = this.memoryDb.getLoginByToken(token);
+    if (!login) {
+      throw new AuthError("Invalid or expired token");
+    }
 
+    const user = this.memoryDb.getUserByLogin(login);
+    if (!user) {
+      throw new AuthError("User not found");
+    }
+
+    const voting = this.memoryDb.getVotingById(id);
+    if (!voting) {
+      throw ValidationError(`Voting '${id}' doesn't exist`);
+    }
+
+    if (voting.votes[login] !== undefined) {
+      throw new ValidationError("You have already voted");
+    }
+
+    const index = voting.options.indexOf(option);
+    if (index === -1) {
+      throw new ValidationError(`Option '${option}' doesn't exist`);
+    }
+
+    voting.votes[login] = index;
+
+    this.memoryDb.addOrUpdateVoting(voting);
+
+    return voting;
   }
 
   get(token, id) {

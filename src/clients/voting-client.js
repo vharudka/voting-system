@@ -28,9 +28,21 @@ class VotingClient {
       this.titleHeader.textContent = data.title;
 
       data.options.forEach(opt => {
-        const p = document.createElement("p");
-        p.textContent = opt;
-        this.optionsHeader.appendChild(p);
+        const row = document.createElement("div");
+        row.className = "optionRow";
+
+        const text = document.createElement("span");
+        text.textContent = opt;
+
+        const btn = document.createElement("button");
+        btn.textContent = "Cast Vote";
+        btn.className = "castVoteBtn";
+        btn.addEventListener("click", () => this.castVote(opt));
+
+        row.appendChild(text);
+        row.appendChild(btn);
+
+        this.optionsHeader.appendChild(row);
       });
 
       data.logins.forEach(login => {
@@ -38,6 +50,28 @@ class VotingClient {
         p.textContent = login;
         this.loginsHeader.appendChild(p);
       });
+    } catch (err) {
+      alert("Error: " + err.message);
+    }
+  }
+
+  async castVote(option) {
+    const token = localStorage.getItem("token");
+
+    try {
+      const res = await fetch(`/api/votings/${this.votingId}/vote`, {
+        method: "POST",
+        headers: { "Authorization": token || "" },
+        body: JSON.stringify({ option })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error);
+      }
+
+      alert("Your vote has been cast!");
     } catch (err) {
       alert("Error: " + err.message);
     }

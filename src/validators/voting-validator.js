@@ -16,9 +16,13 @@ export class VotingValidator {
     }
 
     for (const option of options) {
-      if (!option || option.trim() === "") {
+      this.validateOption(option);
+    }
+  }
+
+  static validateOption(option) {
+    if (!option || option.trim() === "") {
         throw new ValidationError("Option cannot be empty");
-      }
     }
   }
 
