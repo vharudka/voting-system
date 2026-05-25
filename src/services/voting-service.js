@@ -133,6 +133,10 @@ export class VotingService extends BaseService {
       results[option] = 0;
     }
 
+    if (!user.hasPermission(Permission.VIEW_CHARTS)) {
+      throw new AuthError("You do not have permission to generate reports");
+    }
+
     for (const [user, optionIndex] of Object.entries(voting.votes)) {
       const optionName = voting.options[optionIndex];
       if (results[optionName] !== undefined) {

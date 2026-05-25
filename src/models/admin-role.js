@@ -12,7 +12,7 @@ export class AdminRole extends Role {
           Permission.VIEW_ALL_VOTINGS,
           Permission.VIEW_ALL_USERS,
           Permission.CAST_VOTE,
-          Permission.GENERATE_REPORTS
+          Permission.VIEW_CHARTS
         ]
       );
   }

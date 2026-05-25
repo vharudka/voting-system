@@ -9,7 +9,7 @@ class VotingClient {
       window.location.href = "/login.html";
       return;
     }
-    
+
     const params = new URLSearchParams(window.location.search);
     this.votingId = params.get("id");
 
@@ -73,7 +73,7 @@ class VotingClient {
       if (!res.ok) {
         throw new Error(data.error);
       }
-      
+
       this.drawCharts(data);
     } catch (err) {
       alert("Error: " + err.message);
@@ -104,14 +104,47 @@ class VotingClient {
     const labels = Object.keys(results);
     const data = Object.values(results);
 
-    const bar = new CanvasChart("barChart");
-    bar.render("bar", data, labels);
+    const hasAnyVotes = data.some(v => v > 0);
+    if (hasAnyVotes) {
+      const container = document.getElementById("resultsContainer");
 
-    const line = new CanvasChart("lineChart");
-    line.render("line", data, labels);
+      const title = document.createElement("h3");
+      title.textContent = "Results";
+      container.appendChild(title);
 
-    const pie = new CanvasChart("pieChart");
-    pie.render("pie", data, labels);
+      const chartsDiv = document.createElement("div");
+      chartsDiv.className = "charts";
+
+      const barCanvas = document.createElement("canvas");
+      barCanvas.id = "barChart";
+      barCanvas.width = 600;
+      barCanvas.height = 600;
+
+      const lineCanvas = document.createElement("canvas");
+      lineCanvas.id = "lineChart";
+      lineCanvas.width = 600;
+      lineCanvas.height = 600;
+
+      const pieCanvas = document.createElement("canvas");
+      pieCanvas.id = "pieChart";
+      pieCanvas.width = 600;
+      pieCanvas.height = 900;
+
+      chartsDiv.appendChild(barCanvas);
+      chartsDiv.appendChild(lineCanvas);
+      chartsDiv.appendChild(pieCanvas);
+
+      container.appendChild(chartsDiv);
+
+      const bar = new CanvasChart("barChart");
+      bar.render("bar", data, labels);
+
+      const line = new CanvasChart("lineChart");
+      line.render("line", data, labels);
+
+      const pie = new CanvasChart("pieChart");
+      pie.render("pie", data, labels);
+    }
   }
 }
 
