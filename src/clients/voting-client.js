@@ -1,3 +1,5 @@
+import CanvasChart from "../libs/canvas-charts/canvas-chart.js";
+
 class VotingClient {
   constructor() {
     const params = new URLSearchParams(window.location.search);
@@ -53,13 +55,30 @@ class VotingClient {
     } catch (err) {
       alert("Error: " + err.message);
     }
+
+    try {
+      const res = await fetch(`/api/votings/${this.votingId}/votes`, {
+        method: "GET",
+        headers: { "Authorization": token || "" }
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error);
+      }
+      
+      this.drawCharts(data);
+    } catch (err) {
+      alert("Error: " + err.message);
+    }
   }
 
   async castVote(option) {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch(`/api/votings/${this.votingId}/vote`, {
+      const res = await fetch(`/api/votings/${this.votingId}/votes`, {
         method: "POST",
         headers: { "Authorization": token || "" },
         body: JSON.stringify({ option })
@@ -75,6 +94,20 @@ class VotingClient {
     } catch (err) {
       alert("Error: " + err.message);
     }
+  }
+
+  drawCharts(results) {
+    const labels = Object.keys(results);
+    const data = Object.values(results);
+
+    const bar = new CanvasChart("barChart");
+    bar.render("bar", data, labels);
+
+    const line = new CanvasChart("lineChart");
+    line.render("line", data, labels);
+
+    const pie = new CanvasChart("pieChart");
+    pie.render("pie", data, labels);
   }
 }
 

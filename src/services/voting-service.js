@@ -158,4 +158,35 @@ export class VotingService {
       throw new AuthError("You do not have permission to view votings");
     }
   }
+
+  getResults(token, id) {
+    const login = this.memoryDb.getLoginByToken(token);
+    if (!login) {
+      throw new AuthError("Invalid or expired token");
+    }
+
+    const user = this.memoryDb.getUserByLogin(login);
+    if (!user) {
+      throw new AuthError("User not found");
+    }
+
+    const voting = this.memoryDb.getVotingById(id);
+    if (!voting) {
+      throw ValidationError(`Voting '${id}' doesn't exist`);
+    }
+
+    const results = {};
+    for (const option of voting.options) {
+      results[option] = 0;
+    }
+
+    for (const [user, optionIndex] of Object.entries(voting.votes)) {
+      const optionName = voting.options[optionIndex];
+      if (results[optionName] !== undefined) {
+        results[optionName]++;
+      }
+    }
+
+    return results;
+  }
 }

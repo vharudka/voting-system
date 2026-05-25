@@ -23,11 +23,23 @@ const votingController = new VotingController(votingService);
 const server = http.createServer((req, res) => {
   const { pathname } = parse(req.url, true);
 
-  const staticDirs = ["pages", "css", "clients"];
+  const staticDirs = ["/pages", "/css", "/clients", "/libs/canvas-charts"];
   for (const dir of staticDirs) {
-    const filePath = path.join(process.cwd(), dir, pathname);
+    let filePath = '';
+
+    if (pathname.includes(dir)) {
+      filePath = path.join(process.cwd(), pathname);
+    }
+    else {
+      filePath = path.join(process.cwd(), dir, pathname);
+    }
 
     if (fs.existsSync(filePath)) {
+      const ext = path.extname(filePath);
+
+      if (ext === ".js") {
+        res.writeHead(200, { "Content-Type": "application/javascript" });
+      }
       return res.end(fs.readFileSync(filePath));
     }
   }
@@ -68,6 +80,15 @@ const server = http.createServer((req, res) => {
     });
   }
 
+  if (pathname.startsWith("/api/votings/") && pathname.endsWith("/votes") && req.method === "GET") {
+    const token = req.headers["authorization"];
+    const id = pathname.split("/")[3];
+
+    return handleJson(req, res, body => {
+      return votingController.getResults(token, id);
+    });
+  }
+
   if (pathname === "/api/votings" && req.method === "GET") {
     const token = req.headers["authorization"];
 
@@ -94,7 +115,7 @@ const server = http.createServer((req, res) => {
     });
   }
 
-  if (pathname.startsWith("/api/votings/") && pathname.endsWith("/vote") && req.method === "POST") {
+  if (pathname.startsWith("/api/votings/") && pathname.endsWith("/votes") && req.method === "POST") {
     const token = req.headers["authorization"];
     const id = pathname.split("/")[3];
 

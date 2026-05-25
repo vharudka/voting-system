@@ -61,11 +61,13 @@ export class MemoryDb {
       ],
       [
         "user1",
-        "user2"
+        "user2",
+        "user3"
       ],
       {
         "user1": 1,
         "user2": 3,
+        "user3": 3
       }
     );
 

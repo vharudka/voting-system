@@ -50,6 +50,6 @@ export class VotingController {
     AuthValidator.validateToken(token);
     VotingValidator.validateVotingId(id);
 
-    return this.votingService.getResults(id);
+    return this.votingService.getResults(token, id);
   }
 }
