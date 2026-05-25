@@ -2,22 +2,15 @@ import { Permission } from "../models/permissions.js";
 import { AuthError } from "../errors/auth-error.js";
 import { ValidationError } from "../errors/validation-error.js";
 import { Voting } from "../models/voting.js";
+import { BaseService } from "./base-service.js";
 
-export class VotingService {
+export class VotingService extends BaseService {
   constructor(memoryDb) {
-    this.memoryDb = memoryDb;
+    super(memoryDb);
   }
 
   create(token, title, options, logins) {
-    const login = this.memoryDb.getLoginByToken(token);
-    if (!login) {
-      throw new AuthError("Invalid or expired token");
-    }
-
-    const user = this.memoryDb.getUserByLogin(login);
-    if (!user) {
-      throw new AuthError("User not found");
-    }
+    const user = this.getUserFromToken(token);
 
     if (!user.hasPermission(Permission.CREATE_VOTING)) {
       throw new AuthError("You do not have permission to create votings");
@@ -44,15 +37,7 @@ export class VotingService {
   }
 
   update(token, id, title, options, logins) {
-    const login = this.memoryDb.getLoginByToken(token);
-    if (!login) {
-      throw new AuthError("Invalid or expired token");
-    }
-
-    const user = this.memoryDb.getUserByLogin(login);
-    if (!user) {
-      throw new AuthError("User not found");
-    }
+    const user = this.getUserFromToken(token);
 
     if (!user.hasPermission(Permission.EDIT_VOTING)) {
       throw new AuthError("You do not have permission to edit votings");
@@ -84,15 +69,7 @@ export class VotingService {
   }
 
   castVote(token, id, option) {
-    const login = this.memoryDb.getLoginByToken(token);
-    if (!login) {
-      throw new AuthError("Invalid or expired token");
-    }
-
-    const user = this.memoryDb.getUserByLogin(login);
-    if (!user) {
-      throw new AuthError("User not found");
-    }
+    const user = this.getUserFromToken(token);
 
     const voting = this.memoryDb.getVotingById(id);
     if (!voting) {
@@ -120,15 +97,7 @@ export class VotingService {
   }
 
   get(token, id) {
-    const login = this.memoryDb.getLoginByToken(token);
-    if (!login) {
-      throw new AuthError("Invalid or expired token");
-    }
-
-    const user = this.memoryDb.getUserByLogin(login);
-    if (!user) {
-      throw new AuthError("User not found");
-    }
+    const user = this.getUserFromToken(token);
 
     if (user.hasPermission(Permission.VIEW_ALL_VOTINGS)) {
       return this.memoryDb.getVotingById(id);
@@ -140,15 +109,7 @@ export class VotingService {
   }
 
   getAll(token) {
-    const login = this.memoryDb.getLoginByToken(token);
-    if (!login) {
-      throw new AuthError("Invalid or expired token");
-    }
-
-    const user = this.memoryDb.getUserByLogin(login);
-    if (!user) {
-      throw new AuthError("User not found");
-    }
+    const user = this.getUserFromToken(token);
 
     if (user.hasPermission(Permission.VIEW_ALL_VOTINGS)) {
       return this.memoryDb.getAllVotings();
@@ -160,15 +121,7 @@ export class VotingService {
   }
 
   getResults(token, id) {
-    const login = this.memoryDb.getLoginByToken(token);
-    if (!login) {
-      throw new AuthError("Invalid or expired token");
-    }
-
-    const user = this.memoryDb.getUserByLogin(login);
-    if (!user) {
-      throw new AuthError("User not found");
-    }
+    const user = this.getUserFromToken(token);
 
     const voting = this.memoryDb.getVotingById(id);
     if (!voting) {

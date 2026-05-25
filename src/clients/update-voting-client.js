@@ -120,8 +120,6 @@ class UpdateVotingClient {
       .filter(o => o.selected)
       .map(o => o.value);
 
-    console.log(token);
-
     try {
       const res = await fetch(`/api/votings/${this.votingId}`, {
         method: "PUT",

@@ -5,10 +5,11 @@ import { User } from "../models/user.js";
 import { Permission } from "../models/permissions.js";
 import { AuthError } from "../errors/auth-error.js";
 import { ConflictError } from "../errors/conflict-error.js";
+import { BaseService } from "./base-service.js";
 
-export class UserService {
+export class UserService extends BaseService {
   constructor(memoryDb) {
-    this.memoryDb = memoryDb;
+    super(memoryDb);
   }
 
   generateToken() {
@@ -47,16 +48,7 @@ export class UserService {
   }
 
   getAll(token) {
-    const login = this.memoryDb.getLoginByToken(token);
-
-    if (!login) {
-      throw new AuthError("Invalid or expired token");
-    }
-
-    const user = this.memoryDb.getUserByLogin(login);
-    if (!user) {
-      throw new AuthError("User not found");
-    }
+    const user = this.getUserFromToken(token);
 
     if (!user.hasPermission(Permission.VIEW_ALL_USERS)) {
       throw new AuthError("You do not have permission to view all users");
