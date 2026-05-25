@@ -69,7 +69,15 @@ export class VotingService extends BaseService {
   }
 
   castVote(token, id, option) {
-    const user = this.getUserFromToken(token);
+    const login = this.memoryDb.getLoginByToken(token);
+    if (!login) {
+      throw new AuthError("Invalid or expired token");
+    }
+
+    const user = this.memoryDb.getUserByLogin(login);
+    if (!user) {
+      throw new AuthError("User not found");
+    }
 
     const voting = this.memoryDb.getVotingById(id);
     if (!voting) {
