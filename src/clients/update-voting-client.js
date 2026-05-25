@@ -1,5 +1,13 @@
 class UpdateVotingClient {
   constructor() {
+    this.token = localStorage.getItem("token");
+
+    if (!this.token) {
+      alert("Session has expired")
+      window.location.href = "/login.html";
+      return;
+    }
+    
     const params = new URLSearchParams(window.location.search);
     this.votingId = params.get("id");
 
@@ -24,11 +32,9 @@ class UpdateVotingClient {
   }
 
   async loadVoting() {
-    const token = localStorage.getItem("token");
-
     try {
       const res = await fetch(`/api/votings/${this.votingId}`, {
-        headers: { "Authorization": token || "" }
+        headers: { "Authorization": this.token || "" }
       });
 
       const data = await res.json();
@@ -76,11 +82,9 @@ class UpdateVotingClient {
   }
 
   async loadUsers() {
-    const token = localStorage.getItem("token");
-
     try {
       const res = await fetch("/api/users", {
-        headers: { "Authorization": token || "" }
+        headers: { "Authorization": this.token || "" }
       });
 
       const users = await res.json();
@@ -108,7 +112,6 @@ class UpdateVotingClient {
   }
 
   async updateVoting() {
-    const token = localStorage.getItem("token");
     const title = this.titleInput.value.trim();
     const optionInputs = document.querySelectorAll(".optionInput");
 
@@ -124,7 +127,7 @@ class UpdateVotingClient {
       const res = await fetch(`/api/votings/${this.votingId}`, {
         method: "PUT",
         headers: {
-          "Authorization": token || ""
+          "Authorization": this.token || ""
         },
         body: JSON.stringify({
           title,

@@ -1,11 +1,23 @@
 class VotingsClient {
   constructor() {
+    this.token = localStorage.getItem("token");
+
+    if (!this.token) {
+      alert("Session has expired")
+      window.location.href = "/login.html";
+      return;
+    }
+
     this.init();
   }
 
   async init() {
     const votingsBody = document.getElementById("votingsBody");
     const token = localStorage.getItem("token");
+    const createBtn = document.getElementById("createVotingBtn");
+    createBtn.addEventListener("click", () => {
+      window.location.href = "/create-voting.html";
+    });
 
     try {
       const res = await fetch("/api/votings", {

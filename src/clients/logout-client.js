@@ -1,5 +1,7 @@
 class LogoutClient {
   constructor() {
+    this.token = localStorage.getItem("token");
+
     this.init();
   }
 
@@ -9,13 +11,11 @@ class LogoutClient {
   }
 
   async logout() {
-    const token = localStorage.getItem("token");
-
     try {
       const res = await fetch("/api/auth/logout", {
         method: "GET",
         headers: {
-          "Authorization": token || ""
+          "Authorization": this.token || ""
         }
       });
 

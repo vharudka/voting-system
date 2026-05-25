@@ -1,5 +1,13 @@
 class CreateVotingClient {
   constructor() {
+    this.token = localStorage.getItem("token");
+
+    if (!this.token) {
+      alert("You have been logged out.")
+      window.location.href = "/login.html";
+      return;
+    }
+
     this.init();
   }
 
@@ -20,12 +28,10 @@ class CreateVotingClient {
   }
 
   async loadUsers() {
-    const token = localStorage.getItem("token");
-
     try {
       const res = await fetch("/api/users", {
         method: "GET",
-        headers: { "Authorization": token || "" }
+        headers: { "Authorization": this.token || "" }
       });
 
       const data = await res.json();
@@ -71,7 +77,6 @@ class CreateVotingClient {
   }
 
   async createVoting() {
-    const token = localStorage.getItem("token");
     const title = document.getElementById("title").value.trim();
     const optionInputs = document.querySelectorAll(".optionInput");
 
@@ -87,7 +92,7 @@ class CreateVotingClient {
       const res = await fetch("/api/votings", {
         method: "POST",
         headers: {
-          "Authorization": token || ""
+          "Authorization": this.token || ""
         },
         body: JSON.stringify({
           title,

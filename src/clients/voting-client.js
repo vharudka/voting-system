@@ -2,6 +2,14 @@ import CanvasChart from "../libs/canvas-charts/canvas-chart.js";
 
 class VotingClient {
   constructor() {
+    this.token = localStorage.getItem("token");
+
+    if (!this.token) {
+      alert("Session has expired")
+      window.location.href = "/login.html";
+      return;
+    }
+    
     const params = new URLSearchParams(window.location.search);
     this.votingId = params.get("id");
 
@@ -13,12 +21,10 @@ class VotingClient {
   }
 
   async init() {
-    const token = localStorage.getItem("token");
-
     try {
       const res = await fetch(`/api/votings/${this.votingId}`, {
         method: "GET",
-        headers: { "Authorization": token || "" }
+        headers: { "Authorization": this.token || "" }
       });
 
       const data = await res.json();
@@ -59,7 +65,7 @@ class VotingClient {
     try {
       const res = await fetch(`/api/votings/${this.votingId}/votes`, {
         method: "GET",
-        headers: { "Authorization": token || "" }
+        headers: { "Authorization": this.token || "" }
       });
 
       const data = await res.json();
@@ -75,12 +81,10 @@ class VotingClient {
   }
 
   async castVote(option) {
-    const token = localStorage.getItem("token");
-
     try {
       const res = await fetch(`/api/votings/${this.votingId}/votes`, {
         method: "POST",
-        headers: { "Authorization": token || "" },
+        headers: { "Authorization": this.token || "" },
         body: JSON.stringify({ option })
       });
 
