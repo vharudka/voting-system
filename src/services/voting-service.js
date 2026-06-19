@@ -110,7 +110,7 @@ export class VotingService extends BaseService {
     if (user.hasPermission(Permission.VIEW_ALL_VOTINGS)) {
       return this.memoryDb.getVotingById(id);
     } else if (user.hasPermission(Permission.VIEW_ASSIGNED_VOTINGS)) {
-      return this.memoryDb.getVotingByIdForLogin(login, id);
+      return this.memoryDb.getVotingByIdForLogin(user.login, id);
     } else {
       throw new AuthError("You do not have permission to view voting");
     }
@@ -122,7 +122,7 @@ export class VotingService extends BaseService {
     if (user.hasPermission(Permission.VIEW_ALL_VOTINGS)) {
       return this.memoryDb.getAllVotings();
     } else if (user.hasPermission(Permission.VIEW_ASSIGNED_VOTINGS)) {
-      return this.memoryDb.getVotingsForLogin(login);
+      return this.memoryDb.getVotingsForLogin(user.login);
     } else {
       throw new AuthError("You do not have permission to view votings");
     }
@@ -142,7 +142,7 @@ export class VotingService extends BaseService {
     }
 
     if (!user.hasPermission(Permission.VIEW_CHARTS)) {
-      throw new AuthError("You do not have permission to generate reports");
+      return results;
     }
 
     for (const [user, optionIndex] of Object.entries(voting.votes)) {
